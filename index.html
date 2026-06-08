@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Lyckes Kalas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pink:#ff2e88; --coral:#ff7a2e; --yellow:#ffd60a; --teal:#06d6c4;
+    --purple:#b14dff; --green:#19e58c; --sky:#33d2ff; --gold:#ffd966;
+    --ink:#2a1340; --display:'Baloo 2',system-ui,sans-serif; --body:'Nunito',system-ui,sans-serif;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body{ height:100%; overflow:hidden; }
+  body{ font-family:var(--body); color:#fff; background:#140826; position:relative; touch-action:manipulation; }
+
+  /* ---------- DECK / SLIDES ---------- */
+  .deck{ position:fixed; inset:0; }
+  .slide{
+    position:absolute; inset:0; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center;
+    padding:7vh 22px 15vh; opacity:0; visibility:hidden;
+    transform:scale(1.08) rotate(1.5deg);
+    transition:opacity .5s ease, transform .55s cubic-bezier(.34,1.4,.5,1), visibility .55s;
+    overflow:hidden; background-size:320% 320%; animation:bgShift 13s ease infinite;
+  }
+  .slide.active{ opacity:1; visibility:visible; transform:scale(1) rotate(0); z-index:2; }
+  @keyframes bgShift{ 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+
+  #welcome  { background-image:linear-gradient(135deg,#ff2e88,#b14dff,#33d2ff,#ff7a2e); }
+  #name     { background-image:linear-gradient(135deg,#06d6c4,#33d2ff,#0a8f9c,#19e58c); }
+  #greeting { background-image:linear-gradient(135deg,#ffd60a,#ff7a2e,#ff2e88,#ffb000); }
+  #intro    { background-image:linear-gradient(135deg,#b14dff,#7b2ff2,#ff2e88,#33d2ff); }
+  #hoppborg { background-image:linear-gradient(180deg,#33d2ff,#7be7ff,#19e58c,#0fae6a); }
+  #tarta    { background-image:linear-gradient(135deg,#ff86c2,#ff2e88,#b14dff,#ff5da0); }
+  #glass    { background-image:linear-gradient(135deg,#9bfff0,#06d6c4,#33d2ff,#1bb6a8); }
+  #godis    { background-image:linear-gradient(135deg,#ffd60a,#ff7a2e,#ff2e88,#ffa53d); }
+  #dans     { background:#0c0420; }
+  #info     { background-image:linear-gradient(135deg,#ffd60a,#ff7a2e,#ff2e88,#b14dff); }
+
+  /* ---------- TYPOGRAPHY ---------- */
+  .kicker{ font-weight:900; text-transform:uppercase; letter-spacing:.2em;
+    font-size:clamp(.78rem,3.6vw,1.05rem); color:#fff; margin-bottom:.5em;
+    text-shadow:0 2px 10px rgba(0,0,0,.35); }
+  h1{ font-family:var(--display); font-weight:800; line-height:.92; color:#fff;
+    font-size:clamp(2.7rem,13vw,5.6rem); letter-spacing:-.01em;
+    text-shadow:0 0 14px rgba(255,255,255,.55),0 0 38px var(--glow,#ff2e88),0 7px 0 rgba(0,0,0,.18),0 14px 30px rgba(0,0,0,.3);
+    animation:glowPulse 2.2s ease-in-out infinite; }
+  @keyframes glowPulse{ 0%,100%{ filter:brightness(1); } 50%{ filter:brightness(1.18); } }
+  h2{ font-family:var(--display); font-weight:700; color:#fff; line-height:1.02;
+    font-size:clamp(1.9rem,8vw,3.5rem);
+    text-shadow:0 0 12px rgba(255,255,255,.45),0 0 28px var(--glow,#ff2e88),0 5px 0 rgba(0,0,0,.15); }
+  .lead{ font-weight:800; color:#fff; font-size:clamp(1.05rem,4.8vw,1.55rem);
+    max-width:18ch; line-height:1.35; margin-top:.55em; text-shadow:0 2px 12px rgba(0,0,0,.3); }
+  .guest-name{ font-family:var(--display); font-weight:800; }
+
+  /* ---------- DECORATIVE SPINNING STAR (replaces header emojis) ---------- */
+  .spark-star{ width:clamp(58px,15vw,92px); height:clamp(58px,15vw,92px); display:inline-block;
+    background:linear-gradient(135deg,#ffffff,var(--glow,#ff2e88));
+    clip-path:polygon(50% 0,63% 34%,100% 35%,70% 58%,80% 100%,50% 76%,20% 100%,30% 58%,0 35%,37% 34%);
+    filter:drop-shadow(0 0 16px var(--glow,#ff2e88)) drop-shadow(0 4px 10px rgba(0,0,0,.3));
+    animation:spin 7s linear infinite, starPulse 2s ease-in-out infinite; }
+  @keyframes starPulse{ 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.12); } }
+  /* sparkle dots orbiting the star */
+  .spark-wrap{ position:relative; display:inline-flex; align-items:center; justify-content:center; margin:.1em 0; }
+  .spark-wrap::before,.spark-wrap::after{ content:""; position:absolute; width:10px; height:10px; border-radius:50%;
+    background:#fff; box-shadow:0 0 12px #fff; animation:orbit 4s linear infinite; }
+  .spark-wrap::after{ animation-duration:5.5s; animation-direction:reverse; opacity:.7; }
+  @keyframes orbit{ from{ transform:rotate(0) translateX(58px) rotate(0); }
+    to{ transform:rotate(360deg) translateX(58px) rotate(-360deg); } }
+
+  /* ---------- BUTTONS ---------- */
+  .btn{ margin-top:clamp(1.4rem,4.5vh,2.4rem); font-family:var(--display); font-weight:800;
+    font-size:clamp(1.1rem,5vw,1.55rem); color:var(--ink); background:#fff;
+    border:none; border-radius:999px; padding:.7em 1.6em; cursor:pointer;
+    box-shadow:0 8px 0 rgba(0,0,0,.22),0 14px 30px rgba(0,0,0,.3),0 0 0 4px rgba(255,255,255,.25);
+    transition:transform .12s ease, box-shadow .12s ease; position:relative; z-index:5;
+    animation:btnPulse 1.6s ease-in-out infinite; }
+  @keyframes btnPulse{ 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.05); } }
+  .btn:active{ transform:translateY(6px) scale(1); box-shadow:0 2px 0 rgba(0,0,0,.22),0 6px 16px rgba(0,0,0,.3); }
+
+  /* ---------- NAME INPUT ---------- */
+  .name-field{ margin-top:1.5rem; width:min(420px,86vw); display:flex; flex-direction:column; align-items:center; gap:1rem; }
+  .name-field input{ width:100%; text-align:center; font-family:var(--display); font-weight:700;
+    font-size:clamp(1.3rem,6vw,2rem); color:var(--ink); background:#fff; border:none;
+    border-radius:22px; padding:.6em .4em; outline:none;
+    box-shadow:0 8px 0 rgba(0,0,0,.2), inset 0 0 0 4px rgba(6,214,196,.4), 0 0 26px rgba(255,255,255,.4); }
+  .name-field input::placeholder{ color:#b9b2bd; font-weight:600; }
+
+  /* ---------- AGE BADGE "7" ---------- */
+  .age-wrap{ position:relative; display:inline-flex; align-items:center; justify-content:center; margin:.2em 0; }
+  .age-burst{ position:absolute; width:160px; height:160px; border-radius:50%;
+    background:conic-gradient(from 0deg, var(--yellow), var(--coral), var(--pink), var(--purple), var(--sky), var(--yellow));
+    filter:blur(2px); animation:spin 8s linear infinite; opacity:.9; }
+  .age-burst::after{ content:""; position:absolute; inset:0; border-radius:50%;
+    background:repeating-conic-gradient(from 0deg, rgba(255,255,255,.9) 0 4deg, transparent 4deg 18deg); animation:spin 12s linear infinite reverse; }
+  .age-num{ position:relative; font-family:var(--display); font-weight:800; font-size:clamp(4.5rem,24vw,8rem);
+    color:#fff; text-shadow:0 0 18px #fff,0 0 40px var(--yellow),0 6px 0 rgba(0,0,0,.2);
+    animation:pop77 1.6s ease-in-out infinite; }
+  @keyframes pop77{ 0%,100%{ transform:rotate(-5deg) scale(1); } 50%{ transform:rotate(5deg) scale(1.12); } }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  .hint{ font-weight:800; font-size:.95rem; color:#fff; opacity:.95; margin-top:1.4rem;
+    text-shadow:0 2px 10px rgba(0,0,0,.4); animation:blink 1.4s ease-in-out infinite; }
+  @keyframes blink{ 0%,100%{ opacity:.5; } 50%{ opacity:1; } }
+
+  /* ---------- TOP BAR + DOTS ---------- */
+  .topbar{ position:fixed; top:14px; left:14px; z-index:40; }
+  .back{ border:none; background:rgba(255,255,255,.22); color:#fff; font-family:var(--display);
+    font-weight:700; font-size:1rem; border-radius:999px; padding:.45em 1em; cursor:pointer;
+    backdrop-filter:blur(6px); opacity:0; pointer-events:none; transition:opacity .3s; }
+  .back.show{ opacity:1; pointer-events:auto; }
+  .sound-toggle{ position:fixed; top:13px; right:13px; z-index:40; border:none;
+    width:48px; height:48px; border-radius:50%; background:rgba(255,255,255,.22); color:#fff;
+    font-size:1.35rem; cursor:pointer; backdrop-filter:blur(6px); display:flex;
+    align-items:center; justify-content:center; transition:transform .12s; box-shadow:0 4px 14px rgba(0,0,0,.25); }
+  .sound-toggle:active{ transform:scale(.88); }
+  .sound-toggle.pulse{ animation:soundPulse 1.3s ease-in-out infinite; }
+  @keyframes soundPulse{
+    0%,100%{ transform:scale(1);    box-shadow:0 4px 14px rgba(0,0,0,.25),0 0 0 0 rgba(255,255,255,.55); }
+    50%    { transform:scale(1.12); box-shadow:0 4px 14px rgba(0,0,0,.25),0 0 0 11px rgba(255,255,255,0); }
+  }
+  .dots{ position:fixed; bottom:16px; left:0; right:0; z-index:40; display:flex; gap:8px; justify-content:center; }
+  .dots i{ width:9px; height:9px; border-radius:50%; background:rgba(255,255,255,.4); transition:.25s; }
+  .dots i.on{ background:#fff; transform:scale(1.6); box-shadow:0 0 10px #fff; }
+
+  /* ---------- REVEAL ---------- */
+  .reveal{ opacity:0; }
+  .slide.active .reveal{ animation:popIn .6s var(--d,0s) both cubic-bezier(.34,1.56,.64,1); }
+  @keyframes popIn{ 0%{ opacity:0; transform:translateY(28px) scale(.85) rotate(-3deg); }
+    100%{ opacity:1; transform:translateY(0) scale(1) rotate(0); } }
+
+  .float{ animation:float 2.8s ease-in-out infinite; }
+  @keyframes float{ 0%,100%{ transform:translateY(0) rotate(-3deg); } 50%{ transform:translateY(-16px) rotate(3deg); } }
+
+  /* ---------- FX LAYERS ---------- */
+  #stars{ position:fixed; inset:0; z-index:3; pointer-events:none; }
+  .star{ position:absolute; width:4px; height:4px; border-radius:50%; background:#fff;
+    box-shadow:0 0 8px #fff; animation:twinkle 2.4s ease-in-out infinite; }
+  @keyframes twinkle{ 0%,100%{ opacity:.15; transform:scale(.6); } 50%{ opacity:1; transform:scale(1.3); } }
+  #fx{ position:fixed; inset:0; z-index:50; pointer-events:none; overflow:hidden; }
+  .rocket{ position:absolute; width:6px; height:6px; border-radius:50%; background:#fff;
+    box-shadow:0 0 12px 3px #fff, 0 18px 22px 2px rgba(255,255,255,.35); }
+  .spark{ position:absolute; width:8px; height:8px; border-radius:50%; }
+  .confetti-piece{ position:absolute; top:-24px; }
+
+  /* ---------- CSS BALLOONS (replace balloon emojis) ---------- */
+  .balloon{ position:absolute; bottom:-140px; width:42px; height:90px; }
+  .balloon .bbody{ display:block; width:42px; height:52px; border-radius:50% 50% 48% 48%/60% 60% 42% 42%;
+    background:radial-gradient(circle at 32% 28%, rgba(255,255,255,.75), var(--bc,#ff2e88) 58%);
+    box-shadow:0 6px 16px rgba(0,0,0,.22); position:relative;
+    animation:bsway 3s ease-in-out infinite; transform-origin:50% 120%; }
+  .balloon .bbody::after{ content:""; position:absolute; bottom:-6px; left:50%; margin-left:-5px;
+    border-left:5px solid transparent; border-right:5px solid transparent; border-top:8px solid var(--bc,#ff2e88); }
+  .balloon .bstring{ position:absolute; top:52px; left:50%; width:1px; height:36px; margin-left:-.5px;
+    background:rgba(255,255,255,.55); transform-origin:top center; animation:bsway 3s ease-in-out infinite; }
+  @keyframes bsway{ 0%,100%{ transform:rotate(-6deg); } 50%{ transform:rotate(6deg); } }
+
+  /* ---------- CSS CANDY SHAPES (replace candy emojis) ---------- */
+  .cwrap{ display:block; position:relative; width:18px; height:16px; background:var(--cc,#ff2e88);
+    border-radius:50%; box-shadow:inset 0 0 0 3px rgba(255,255,255,.45),0 3px 8px rgba(0,0,0,.2); }
+  .cwrap::before,.cwrap::after{ content:""; position:absolute; top:1px; bottom:1px; width:9px; background:var(--cc,#ff2e88); }
+  .cwrap::before{ left:-8px; clip-path:polygon(100% 0,0 30%,0 70%,100% 100%); }
+  .cwrap::after{ right:-8px; clip-path:polygon(0 0,100% 30%,100% 70%,0 100%); }
+  .cdrop{ display:block; width:26px; height:28px; background:radial-gradient(circle at 35% 28%, rgba(255,255,255,.6), var(--cc,#19e58c) 60%);
+    border-radius:50% 50% 45% 45%/65% 65% 35% 35%; box-shadow:inset -4px -4px 8px rgba(0,0,0,.15),0 3px 8px rgba(0,0,0,.2); }
+  .cround{ display:block; width:22px; height:22px; border-radius:50%;
+    background:radial-gradient(circle at 32% 30%, rgba(255,255,255,.85), var(--cc,#33d2ff) 60%); box-shadow:0 3px 8px rgba(0,0,0,.2); }
+  .cfloat{ display:inline-flex; animation:float 2s ease-in-out infinite; }
+
+  /* ====================================================== HOPPBORG */
+  .castle-stage{ position:relative; width:min(340px,82vw); height:240px; margin-top:.5rem;
+    animation:hopWhole 1s ease-in-out infinite; }
+  @keyframes hopWhole{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-8px); } }
+  .castle{ position:absolute; bottom:0; left:50%; width:280px; height:170px; margin-left:-140px;
+    transform-origin:50% 100%; animation:castleSway 1.6s ease-in-out infinite; }
+  @keyframes castleSway{ 0%,100%{ transform:rotate(-2deg) scaleY(1); } 50%{ transform:rotate(2deg) scaleY(.96); } }
+  .castle .body{ position:absolute; bottom:0; left:20px; right:20px; height:110px;
+    background:linear-gradient(180deg,#ffe14d,#ffb000); border-radius:26px 26px 14px 14px; box-shadow:inset 0 -10px 0 rgba(0,0,0,.08); }
+  .castle .tower{ position:absolute; bottom:0; width:74px; height:150px; background:linear-gradient(180deg,#ff6fae,#ff2e88); border-radius:18px 18px 12px 12px; }
+  .castle .tower.l{ left:0; } .castle .tower.r{ right:0; }
+  .castle .tower::before{ content:""; position:absolute; top:-22px; left:50%; margin-left:-26px;
+    border-left:26px solid transparent; border-right:26px solid transparent; border-bottom:28px solid var(--sky); }
+  .castle .flag{ position:absolute; top:-44px; left:50%; width:4px; height:26px; margin-left:-2px; background:#fff; }
+  .castle .flag::after{ content:""; position:absolute; top:0; left:4px; border-top:7px solid transparent;
+    border-bottom:7px solid transparent; border-left:16px solid var(--green); animation:flagWave 1s ease-in-out infinite; transform-origin:left; }
+  @keyframes flagWave{ 0%,100%{ transform:scaleX(1); } 50%{ transform:scaleX(.5); } }
+  .castle .door{ position:absolute; bottom:0; left:50%; width:54px; height:70px; margin-left:-27px;
+    background:#7b2ff2; border-radius:27px 27px 0 0; box-shadow:inset 0 0 0 6px rgba(255,255,255,.35); }
+  /* CSS jumping kids (replace gymnast emojis) */
+  .jumper{ position:absolute; width:30px; }
+  .jumper .head{ display:block; width:16px; height:16px; border-radius:50%; margin:0 auto;
+    background:radial-gradient(circle at 35% 30%, #fff, #ffd9b3 70%); box-shadow:0 0 0 2px rgba(0,0,0,.06); }
+  .jumper .torso{ display:block; width:24px; height:26px; margin:1px auto 0; border-radius:12px 12px 9px 9px; background:var(--jc,#ff2e88); position:relative; }
+  .jumper .torso::before,.jumper .torso::after{ content:""; position:absolute; top:1px; width:7px; height:19px; border-radius:5px; background:var(--jc,#ff2e88); transform-origin:top; }
+  .jumper .torso::before{ left:-6px; transform:rotate(-38deg); }
+  .jumper .torso::after{ right:-6px; transform:rotate(38deg); }
+  .jumper.k1{ left:28px; bottom:150px; animation:bounce .9s ease-in-out infinite; }
+  .jumper.k2{ left:95px; bottom:150px; animation:bounce .9s ease-in-out infinite .2s; }
+  .jumper.k3{ left:162px; bottom:150px; animation:bounce .9s ease-in-out infinite .4s; }
+  .jumper.k4{ left:229px; bottom:150px; animation:bounce .9s ease-in-out infinite .6s; }
+  @keyframes bounce{ 0%,100%{ transform:translateY(0) scaleY(1); } 20%{ transform:translateY(-52px) scaleY(1.12); } 45%{ transform:translateY(0) scaleY(.8); } }
+
+  /* ====================================================== TÅRTA */
+  .cake{ position:relative; width:220px; height:250px; margin-top:.5rem; }
+  .cake .plate{ position:absolute; bottom:0; left:-20px; width:260px; height:24px; background:#fff; border-radius:50%; box-shadow:0 12px 26px rgba(0,0,0,.25); }
+  .cake .tier{ position:absolute; left:50%; background:linear-gradient(180deg,#a0623c,#7a4527); }
+  .cake .tier.bottom{ bottom:20px; width:200px; height:64px; margin-left:-100px; border-radius:14px; }
+  .cake .tier.top{ bottom:80px; width:140px; height:54px; margin-left:-70px; border-radius:12px; }
+  .cake .frost{ position:absolute; left:50%; height:26px; background:#fff; border-radius:0 0 16px 16px; }
+  .cake .frost.b{ bottom:62px; width:204px; margin-left:-102px; }
+  .cake .frost.t{ bottom:120px; width:144px; margin-left:-72px; }
+  .cake .frost::before,.cake .frost::after{ content:""; position:absolute; top:14px; width:28px; height:28px; background:#fff; border-radius:50%; }
+  .cake .frost::before{ left:24%; } .cake .frost::after{ right:24%; }
+  /* animated candle flame above the 7 */
+  .cake .flame{ position:absolute; bottom:200px; left:50%; width:16px; height:24px; margin-left:-8px;
+    background:radial-gradient(circle at 50% 70%, #fff 0 18%, var(--yellow) 30%, var(--coral) 70%, transparent 75%);
+    border-radius:50% 50% 50% 50%/65% 65% 35% 35%; transform-origin:50% 100%;
+    animation:flicker .35s ease-in-out infinite alternate; filter:drop-shadow(0 0 10px var(--coral)); }
+  @keyframes flicker{ 0%{ transform:scale(1) rotate(-4deg); } 100%{ transform:scale(1.12,1.2) rotate(4deg); } }
+  .cake .seven{ position:absolute; bottom:138px; left:50%; margin-left:-26px; width:52px; text-align:center;
+    font-family:var(--display); font-weight:800; font-size:4.6rem; line-height:1; color:var(--gold);
+    text-shadow:0 0 14px var(--gold),0 0 30px var(--coral); animation:sevenGlow 1s ease-in-out infinite; }
+  @keyframes sevenGlow{ 0%,100%{ filter:brightness(1) drop-shadow(0 0 4px var(--gold)); transform:rotate(-3deg); } 50%{ filter:brightness(1.4); transform:rotate(3deg); } }
+
+  /* ====================================================== GLASS */
+  .ice-row{ position:relative; display:flex; gap:14px; align-items:flex-end; justify-content:center; margin-top:.5rem; height:250px; }
+  .icecream{ position:relative; width:120px; height:230px; animation:wobble 2.4s ease-in-out infinite; transform-origin:50% 90%; }
+  .icecream.i2{ width:100px; height:200px; animation-delay:.5s; }
+  .icecream.i3{ width:100px; height:200px; animation-delay:1s; }
+  @keyframes wobble{ 0%,100%{ transform:rotate(-5deg); } 50%{ transform:rotate(5deg); } }
+  .icecream .cone{ position:absolute; bottom:0; left:50%; margin-left:-40px; width:0; height:0;
+    border-left:40px solid transparent; border-right:40px solid transparent; border-top:110px solid #e8a04e; }
+  .icecream .cone::after{ content:""; position:absolute; top:-100px; left:-35px; width:70px; height:90px;
+    clip-path:polygon(0 0,100% 0,50% 100%);
+    background:repeating-linear-gradient(45deg,transparent 0 11px,rgba(120,70,20,.45) 11px 13px),
+               repeating-linear-gradient(-45deg,transparent 0 11px,rgba(120,70,20,.45) 11px 13px); }
+  .icecream .scoop{ position:absolute; left:50%; width:88px; height:88px; margin-left:-44px; border-radius:50%; }
+  .icecream .s1{ bottom:82px; }
+  .icecream .s2{ bottom:128px; width:76px; height:76px; margin-left:-38px; }
+  .i1 .s1{ background:radial-gradient(circle at 35% 30%,#ffd6e8,#ff2e88); } .i1 .s2{ background:radial-gradient(circle at 35% 30%,#d8fff5,#06d6c4); }
+  .i2 .s1{ background:radial-gradient(circle at 35% 30%,#fff3c4,#ffb000); } .i2 .s2{ background:radial-gradient(circle at 35% 30%,#e6ccff,#b14dff); }
+  .i3 .s1{ background:radial-gradient(circle at 35% 30%,#cdeeff,#33d2ff); } .i3 .s2{ background:radial-gradient(circle at 35% 30%,#d6ffe0,#19e58c); }
+  .icecream .cherry{ position:absolute; bottom:200px; left:50%; width:24px; height:24px; margin-left:-12px;
+    background:radial-gradient(circle at 35% 30%,#ff7a8a,#d6173c); border-radius:50%; }
+
+  /* ====================================================== GODIS */
+  .candies{ position:relative; width:min(320px,82vw); height:200px; margin-top:.5rem; display:flex; align-items:center; justify-content:center; gap:26px; }
+  .lolly{ position:relative; width:100px; height:100px; }
+  .lolly .head{ width:100px; height:100px; border-radius:50%;
+    background:conic-gradient(var(--pink) 0 60deg,#fff 60deg 120deg,var(--teal) 120deg 180deg,#fff 180deg 240deg,var(--yellow) 240deg 300deg,#fff 300deg 360deg);
+    box-shadow:inset 0 0 0 5px rgba(0,0,0,.06),0 8px 18px rgba(0,0,0,.2); animation:spin 4s linear infinite; }
+  .lolly .stick{ position:absolute; bottom:-58px; left:50%; width:8px; height:64px; margin-left:-4px; background:#fff; border-radius:4px; box-shadow:0 0 0 2px rgba(0,0,0,.06); }
+
+  /* ====================================================== DANS */
+  #dans.active{ animation:discoFloor .35s steps(1) infinite; }
+  @keyframes discoFloor{ 0%{ background:#1a0640; } 25%{ background:#06283d; } 50%{ background:#2a0620; } 75%{ background:#062a1a; } }
+  .lasers{ position:absolute; inset:0; overflow:hidden; pointer-events:none; opacity:.5; }
+  .laser{ position:absolute; top:14%; left:50%; width:200vw; height:5px; transform-origin:left center;
+    background:linear-gradient(90deg, transparent, var(--c), transparent); filter:blur(1px); }
+  .laser.a{ --c:#ff2e88; animation:sweep 3s linear infinite; }
+  .laser.b{ --c:#33d2ff; animation:sweep 3s linear infinite 1s; }
+  .laser.c{ --c:#19e58c; animation:sweep 3s linear infinite 2s; }
+  @keyframes sweep{ 0%{ transform:rotate(20deg); } 50%{ transform:rotate(160deg); } 100%{ transform:rotate(20deg); } }
+  .disco{ position:relative; width:200px; margin-top:.5rem; display:flex; flex-direction:column; align-items:center; z-index:1; }
+  .ball-rope{ width:4px; height:28px; background:#fff; opacity:.6; }
+  .ball{ width:108px; height:108px; border-radius:50%;
+    background-image:linear-gradient(rgba(255,255,255,.25) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.25) 1px,transparent 1px),
+      radial-gradient(circle at 35% 30%,#fff,#9fd0ff 60%,#6f8fd6);
+    background-size:18px 18px,18px 18px,100% 100%;
+    box-shadow:0 0 50px 12px rgba(180,220,255,.6),inset -10px -10px 24px rgba(0,0,0,.3); animation:spinGlow 3s linear infinite; }
+  @keyframes spinGlow{ 0%{ filter:hue-rotate(0); transform:rotate(0); } 100%{ filter:hue-rotate(360deg); transform:rotate(360deg); } }
+  /* CSS dancers (replace dancer emojis) */
+  .dancers{ display:flex; gap:26px; align-items:flex-end; justify-content:center; margin-top:26px; }
+  .dancers .d1{ animation:dance .5s ease-in-out infinite; }
+  .dancers .d2{ animation:dance .5s ease-in-out infinite .25s; }
+  @keyframes dance{ 0%,100%{ transform:translateY(0) rotate(-10deg); } 50%{ transform:translateY(-14px) rotate(10deg); } }
+  .dancer{ position:relative; width:46px; }
+  .dancer .head{ display:block; width:18px; height:18px; border-radius:50%; margin:0 auto;
+    background:radial-gradient(circle at 35% 30%, #fff, #ffcfa3 70%); box-shadow:0 0 10px rgba(255,255,255,.5); }
+  .dancer .torso{ display:block; width:16px; height:30px; margin:1px auto 0; border-radius:8px 8px 4px 4px; background:var(--dc,#ff2e88); position:relative; }
+  .dancer .torso::before,.dancer .torso::after{ content:""; position:absolute; top:3px; width:7px; height:22px; border-radius:4px; background:var(--dc,#ff2e88); transform-origin:top; }
+  .dancer .torso::before{ left:-7px; transform:rotate(-42deg); }
+  .dancer .torso::after{ right:-7px; transform:rotate(42deg); }
+  .dancer .skirt{ display:block; width:0; height:0; margin:-2px auto 0;
+    border-left:22px solid transparent; border-right:22px solid transparent; border-top:30px solid var(--dc,#ff2e88); }
+  .dancer .legs{ position:relative; height:24px; }
+  .dancer .legs::before,.dancer .legs::after{ content:""; position:absolute; top:0; width:7px; height:24px; border-radius:4px; background:var(--dc,#33d2ff); }
+  .dancer .legs::before{ left:13px; transform:rotate(9deg); transform-origin:top; }
+  .dancer .legs::after{ right:13px; transform:rotate(-9deg); transform-origin:top; }
+
+  /* ---------- INFO CARD ---------- */
+  .card{ background:rgba(255,255,255,.97); color:var(--ink); border-radius:26px; padding:1.5rem 1.4rem;
+    width:min(420px,88vw); box-shadow:0 16px 44px rgba(0,0,0,.32),0 0 0 5px rgba(255,255,255,.2); margin-top:1rem; }
+  .card .row{ display:flex; align-items:flex-start; gap:.7rem; padding:.5rem 0; border-bottom:2px dashed rgba(42,19,64,.15); text-align:left; }
+  .card .row:last-child{ border-bottom:none; }
+  .card .row .ico{ font-size:1.5rem; line-height:1; }
+  .card .row b{ font-family:var(--display); display:block; font-size:1.05rem; }
+  .card .row span{ font-weight:700; opacity:.8; }
+  .edit-hint{ font-size:.78rem; opacity:.55; margin-top:.4rem; font-weight:700; }
+  #rsvp-area{ margin-top:.2rem; }
+
+  @media (max-height:660px){ .slide{ padding-top:5vh; } .castle-stage,.ice-row{ height:200px; } }
+</style>
+</head>
+<body>
+
+  <div id="stars"></div>
+
+  <div class="topbar"><button class="back" id="backBtn" onclick="prev()">← Tillbaka</button></div>
+  <button class="sound-toggle pulse" id="soundBtn" onclick="toggleSound()" aria-label="Ljud på eller av">🔊</button>
+
+  <div class="deck" id="deck">
+
+    <!-- 1. WELCOME -->
+    <section class="slide active" id="welcome" style="--glow:#ff2e88">
+      <span class="spark-wrap reveal" style="--d:.05s"><span class="spark-star"></span></span>
+      <div class="kicker reveal" style="--d:.15s">Hej och välkommen till</div>
+      <h1 class="reveal" style="--d:.25s">LYCKES<br>KALAS</h1>
+      <div class="age-wrap reveal" style="--d:.4s"><div class="age-burst"></div><div class="age-num">7</div></div>
+      <div class="kicker reveal" style="--d:.5s" >Lycke fyller 7 år!</div>
+      <button class="btn reveal" style="--d:.6s" onclick="next()">Kom igen!</button>
+      <div class="hint reveal" style="--d:.7s">Tryck var som helst för fyrverkerier!</div>
+    </section>
+
+    <!-- 2. NAME -->
+    <section class="slide" id="name" style="--glow:#06d6c4">
+      <span class="spark-wrap reveal" style="--d:.05s"><span class="spark-star"></span></span>
+      <h2 class="reveal" style="--d:.15s">Vad heter du?</h2>
+      <div class="name-field reveal" style="--d:.3s">
+        <input id="nameInput" type="text" placeholder="Skriv ditt namn…" autocomplete="off" maxlength="24"
+               onkeydown="if(event.key==='Enter')submitName()" />
+        <button class="btn" onclick="submitName()">Nästa →</button>
+      </div>
+    </section>
+
+    <!-- 3. GREETING -->
+    <section class="slide" id="greeting" style="--glow:#ff7a2e">
+      <span class="spark-wrap reveal" style="--d:.05s"><span class="spark-star"></span></span>
+      <h1 class="reveal" style="--d:.15s">Hej <span class="guest-name">kompis</span>!</h1>
+      <p class="lead reveal" style="--d:.3s">Vad roligt att just <b>DU</b> kommer!</p>
+      <button class="btn reveal" style="--d:.45s" onclick="next()">Vad ska vi göra? →</button>
+    </section>
+
+    <!-- 4. INTRO -->
+    <section class="slide" id="intro" style="--glow:#b14dff">
+      <span class="spark-wrap reveal" style="--d:.05s"><span class="spark-star"></span></span>
+      <h2 class="reveal" style="--d:.15s">Det blir massor av<br>roliga aktiviteter!</h2>
+      <p class="lead reveal" style="--d:.3s">Häng med så visar jag…</p>
+      <button class="btn reveal" style="--d:.45s" onclick="next()">Visa mig! →</button>
+    </section>
+
+    <!-- 5. HOPPBORG -->
+    <section class="slide" id="hoppborg" style="--glow:#33d2ff">
+      <h1 class="reveal" style="--d:.05s">HOPPBORG!</h1>
+      <div class="castle-stage reveal" style="--d:.2s">
+        <span class="jumper k1" style="--jc:#ff2e88"><span class="head"></span><span class="torso"></span></span>
+        <span class="jumper k2" style="--jc:#33d2ff"><span class="head"></span><span class="torso"></span></span>
+        <span class="jumper k3" style="--jc:#ffd60a"><span class="head"></span><span class="torso"></span></span>
+        <span class="jumper k4" style="--jc:#b14dff"><span class="head"></span><span class="torso"></span></span>
+        <div class="castle">
+          <div class="tower l"><span class="flag"></span></div>
+          <div class="tower r"><span class="flag"></span></div>
+          <div class="body"></div><div class="door"></div>
+        </div>
+      </div>
+      <p class="lead reveal" style="--d:.35s">Studsa så högt du bara kan!</p>
+      <button class="btn reveal" style="--d:.5s" onclick="next()">Mer! →</button>
+    </section>
+
+    <!-- 6. TÅRTA -->
+    <section class="slide" id="tarta" style="--glow:#ff2e88">
+      <h1 class="reveal" style="--d:.05s">TÅRTA!</h1>
+      <div class="cake reveal" style="--d:.2s">
+        <div class="flame"></div>
+        <div class="seven">7</div>
+        <div class="tier top"></div><div class="frost t"></div>
+        <div class="tier bottom"></div><div class="frost b"></div>
+        <div class="plate"></div>
+      </div>
+      <p class="lead reveal" style="--d:.35s">Med ett stort 7-ljus!</p>
+      <button class="btn reveal" style="--d:.5s" onclick="next()">Mums, mer! →</button>
+    </section>
+
+    <!-- 7. GLASS -->
+    <section class="slide" id="glass" style="--glow:#06d6c4">
+      <h1 class="reveal" style="--d:.05s">GLASS!</h1>
+      <div class="ice-row reveal" style="--d:.2s">
+        <div class="icecream i2"><div class="scoop s2"></div><div class="scoop s1"></div><div class="cone"></div></div>
+        <div class="icecream i1"><div class="cherry"></div><div class="scoop s2"></div><div class="scoop s1"></div><div class="cone"></div></div>
+        <div class="icecream i3"><div class="scoop s2"></div><div class="scoop s1"></div><div class="cone"></div></div>
+      </div>
+      <p class="lead reveal" style="--d:.35s">Välj din favoritsmak!</p>
+      <button class="btn reveal" style="--d:.5s" onclick="next()">Och sen? →</button>
+    </section>
+
+    <!-- 8. GODIS -->
+    <section class="slide" id="godis" style="--glow:#ff7a2e">
+      <h1 class="reveal" style="--d:.05s">GODIS!</h1>
+      <div class="candies reveal" style="--d:.2s">
+        <span class="cfloat"><span class="cwrap" style="--cc:#ff2e88;transform:scale(2.6)"></span></span>
+        <div class="lolly"><div class="head"></div><div class="stick"></div></div>
+        <span class="cfloat" style="animation-delay:.4s"><span class="cdrop" style="--cc:#19e58c;transform:scale(2.8)"></span></span>
+      </div>
+      <p class="lead reveal" style="--d:.4s">Det regnar godis!</p>
+      <button class="btn reveal" style="--d:.55s" onclick="next()">Sista grejen! →</button>
+    </section>
+
+    <!-- 9. DANS -->
+    <section class="slide" id="dans" style="--glow:#b14dff">
+      <div class="lasers"><div class="laser a"></div><div class="laser b"></div><div class="laser c"></div></div>
+      <h1 class="reveal" style="--d:.05s">DANS!</h1>
+      <div class="disco reveal" style="--d:.2s">
+        <div class="ball-rope"></div><div class="ball"></div>
+        <div class="dancers">
+          <span class="dancer d1" style="--dc:#ff2e88"><span class="head"></span><span class="torso"></span><span class="skirt"></span></span>
+          <span class="dancer d2" style="--dc:#33d2ff"><span class="head"></span><span class="torso"></span><span class="legs"></span></span>
+        </div>
+      </div>
+      <p class="lead reveal" style="--d:.35s">Dansa loss på dansgolvet!</p>
+      <button class="btn reveal" style="--d:.5s" onclick="next()">Är du med? →</button>
+    </section>
+
+    <!-- 10. INFO / OSA -->
+    <section class="slide" id="info" style="--glow:#ff2e88">
+      <h2 class="reveal" style="--d:.05s"><span class="guest-name">Kompis</span>, vi ses<br>på kalaset!</h2>
+      <div class="card reveal" style="--d:.25s">
+        <div class="row"><span class="ico">📅</span><div><b>När?</b><span>LÖRDAG XX MÅNAD · kl. XX:XX</span></div></div>
+        <div class="row"><span class="ico">📍</span><div><b>Var?</b><span>Adress / plats här</span></div></div>
+        <div class="row"><span class="ico">🎂</span><div><b>Vem?</b><span>Lycke fyller 7 år!</span></div></div>
+        <div class="row"><span class="ico">📞</span><div><b>OSA till</b><span>Namn · 07X-XXX XX XX</span></div></div>
+        <p class="edit-hint">↑ Byt ut texterna mot din riktiga info.</p>
+      </div>
+      <div id="rsvp-area" class="reveal" style="--d:.4s"><button class="btn" onclick="rsvp()">Jag kommer!</button></div>
+    </section>
+
+  </div>
+
+  <div class="dots" id="dots"></div>
+  <div id="fx"></div>
+
+<script>
+  const palette=['#ff2e88','#ff7a2e','#ffd60a','#06d6c4','#b14dff','#19e58c','#33d2ff','#ff5da0'];
+  const pick=()=>palette[Math.floor(Math.random()*palette.length)];
+  const fx=document.getElementById('fx');
+  const slides=Array.from(document.querySelectorAll('.slide'));
+  let idx=0, guestName='kompis';
+
+  /* ---- STARS ---- */
+  (function(){
+    const s=document.getElementById('stars');
+    for(let i=0;i<46;i++){
+      const d=document.createElement('div'); d.className='star';
+      d.style.left=Math.random()*100+'vw'; d.style.top=Math.random()*100+'vh';
+      d.style.animationDelay=(Math.random()*2.4)+'s';
+      const sc=.5+Math.random(); d.style.transform='scale('+sc+')';
+      s.appendChild(d);
+    }
+  })();
+
+  /* ---- DOTS ---- */
+  const dotsEl=document.getElementById('dots');
+  slides.forEach(()=>dotsEl.appendChild(document.createElement('i')));
+  const dots=Array.from(dotsEl.children);
+  const updateDots=()=>dots.forEach((d,i)=>d.classList.toggle('on',i===idx));
+
+  /* ---- FIREWORKS ---- */
+  function burst(x,y){
+    popSFX();
+    const cA=pick(), cB=Math.random()>.5?pick():cA;
+    const n=30+Math.floor(Math.random()*18);
+    const fl=document.createElement('div');
+    fl.className='spark'; fl.style.left=x+'px'; fl.style.top=y+'px';
+    fl.style.width='26px'; fl.style.height='26px'; fl.style.marginLeft='-13px'; fl.style.marginTop='-13px';
+    fl.style.background='#fff'; fl.style.boxShadow='0 0 40px 20px rgba(255,255,255,.8)';
+    fx.appendChild(fl);
+    fl.animate([{opacity:1,transform:'scale(1)'},{opacity:0,transform:'scale(2.4)'}],{duration:380,easing:'ease-out'});
+    setTimeout(()=>fl.remove(),420);
+    for(let i=0;i<n;i++){
+      const s=document.createElement('div'); s.className='spark';
+      const ang=(Math.PI*2/n)*i+Math.random()*.25, dist=70+Math.random()*80;
+      const dx=Math.cos(ang)*dist, dy=Math.sin(ang)*dist;
+      const col=i%2?cA:cB;
+      s.style.left=x+'px'; s.style.top=y+'px'; s.style.background=col;
+      s.style.boxShadow='0 0 10px '+col;
+      const sz=5+Math.random()*5; s.style.width=sz+'px'; s.style.height=sz+'px';
+      fx.appendChild(s);
+      s.animate([
+        {transform:'translate(0,0) scale(1.2)',opacity:1},
+        {transform:'translate('+dx+'px,'+(dy+50)+'px) scale(.2)',opacity:0}
+      ],{duration:1000+Math.random()*600,easing:'cubic-bezier(.12,.8,.3,1)'});
+      setTimeout(()=>s.remove(),1700);
+    }
+  }
+  function rocket(targetX,targetY){
+    const r=document.createElement('div'); r.className='rocket';
+    r.style.left=targetX+'px'; r.style.top=window.innerHeight+'px';
+    r.style.background=pick();
+    fx.appendChild(r);
+    const dur=520+Math.random()*260;
+    r.animate([{transform:'translateY(0)',opacity:1},
+               {transform:'translateY('+(targetY-window.innerHeight)+'px)',opacity:1}],
+              {duration:dur,easing:'cubic-bezier(.25,.7,.4,1)'});
+    setTimeout(()=>{ r.remove(); burst(targetX,targetY); },dur);
+  }
+  let fwTimer=null, fwRate=900;
+  function startFW(rate){ fwRate=rate||900; stopFW();
+    fwTimer=setInterval(()=>rocket(40+Math.random()*(innerWidth-80),
+                                   60+Math.random()*innerHeight*0.42), fwRate); }
+  function stopFW(){ clearInterval(fwTimer); fwTimer=null; }
+
+  /* ---- CONFETTI ---- */
+  function confetti(amount){
+    for(let i=0;i<amount;i++){
+      const c=document.createElement('div'); c.className='confetti-piece';
+      const sz=6+Math.random()*9;
+      c.style.left=Math.random()*100+'vw'; c.style.width=sz+'px'; c.style.height=(sz*.6)+'px';
+      c.style.background=pick(); if(Math.random()>.5) c.style.borderRadius='50%';
+      fx.appendChild(c);
+      const dur=2600+Math.random()*2600;
+      c.animate([{transform:'translateY(0) rotate(0)',opacity:1},
+                 {transform:'translateY(112vh) rotate(900deg)',opacity:.85}],
+                {duration:dur,easing:'linear'});
+      setTimeout(()=>c.remove(),dur+100);
+    }
+  }
+  let confTimer=setInterval(()=>confetti(4),1400); confetti(70);
+
+  /* ---- CSS BALLOONS (floating) ---- */
+  setInterval(()=>{
+    const b=document.createElement('div'); b.className='balloon';
+    b.innerHTML='<span class="bstring"></span><span class="bbody" style="--bc:'+pick()+'"></span>';
+    b.style.left=Math.random()*92+'vw';
+    fx.appendChild(b);
+    const dur=6500+Math.random()*3500, drift=(Math.random()*120-60);
+    b.animate([{transform:'translateY(0) translateX(0)',opacity:.9},
+               {transform:'translateY(-124vh) translateX('+drift+'px)',opacity:.9}],
+              {duration:dur,easing:'linear'});
+    setTimeout(()=>b.remove(),dur+100);
+  },2400);
+
+  /* ---- CSS CANDY RAIN (godis slide only) ---- */
+  let candyTimer=null;
+  function candyRain(){ stopCandy();
+    candyTimer=setInterval(()=>{
+      const c=document.createElement('div'); c.className='confetti-piece';
+      const t=['cwrap','cdrop','cround'][Math.floor(Math.random()*3)];
+      c.innerHTML='<span class="'+t+'" style="--cc:'+pick()+'"></span>';
+      c.style.left=Math.random()*100+'vw';
+      fx.appendChild(c);
+      const dur=2800+Math.random()*1800;
+      c.animate([{transform:'translateY(0) rotate(0)',opacity:1},
+                 {transform:'translateY(112vh) rotate(540deg)',opacity:1}],{duration:dur,easing:'linear'});
+      setTimeout(()=>c.remove(),dur+100);
+    },170);
+  }
+  function stopCandy(){ clearInterval(candyTimer); candyTimer=null; }
+
+  /* ---- NAV ---- */
+  function goTo(i){
+    if(i<0||i>=slides.length) return;
+    slides[idx].classList.remove('active'); idx=i; slides[idx].classList.add('active');
+    updateDots();
+    document.getElementById('backBtn').classList.toggle('show', idx>0);
+    onEnter(slides[idx].id);
+    for(let k=0;k<2;k++) setTimeout(()=>rocket(innerWidth*(.25+.5*Math.random()), innerHeight*(.2+.2*Math.random())), k*180);
+  }
+  const next=()=>goTo(idx+1), prev=()=>goTo(idx-1);
+
+  function submitName(){
+    const v=document.getElementById('nameInput').value.trim();
+    guestName=v||'kompis';
+    document.querySelectorAll('.guest-name').forEach(el=>el.textContent=guestName);
+    next();
+  }
+
+  function onEnter(id){
+    stopCandy();
+    if(id==='welcome'||id==='dans'||id==='info'){ startFW(550); }
+    else { startFW(1000); }
+    if(id==='godis') candyRain();
+    if(id==='name') setTimeout(()=>document.getElementById('nameInput').focus(),400);
+  }
+
+  /* ---- RSVP ---- */
+  function rsvp(){
+    confetti(200); startFW(250);
+    for(let k=0;k<6;k++) setTimeout(()=>rocket(innerWidth*Math.random(),innerHeight*(.15+.3*Math.random())),k*150);
+    setTimeout(()=>startFW(550),2600);
+    document.getElementById('rsvp-area').innerHTML=
+      '<h2 style="font-size:clamp(1.6rem,7vw,2.6rem)">Yay!</h2>'+
+      '<p class="lead" style="margin:.3em auto 0">Vi ses, <span class="guest-name">'+guestName+'</span>!</p>';
+    /* =====================================================================
+       👉 HÄR KOPPLAR DU IN DIN DATABAS / OSA-FORMULÄR VID DEPLOY:
+       fetch('https://din-backend.se/api/osa', {
+         method:'POST', headers:{'Content-Type':'application/json'},
+         body: JSON.stringify({ namn: guestName, kommer:true, tid:new Date().toISOString() })
+       });
+       (Lämnat tomt med flit – ren statisk fil funkar att deploya direkt.)
+       ===================================================================== */
+  }
+
+  /* ---- TAP ANYWHERE = FIREWORK ---- */
+  document.getElementById('deck').addEventListener('pointerdown', e=>{
+    ensureAudio();
+    if(e.target.closest('button,input,a')) return;
+    rocket(e.clientX, e.clientY);
+  });
+
+  /* ============================================================
+     DISCO-MUSIK (Web Audio, ingen extern fil)
+     - Fyra-på-golvet baskagge (four on the floor)
+     - Öppna hi-hats på off-beat (det klassiska disco-"tss")
+     - Claps på 2:an & 4:an
+     - Oktav-bas som studsar (disco octave bass)
+     - Stråk-stötar på off-beat + liten melodi-hook
+     Ackord: C – Am – F – G, ca 120 BPM
+     ============================================================ */
+  let actx=null, master=null, musicGain=null, sfxGain=null;
+  let soundEnabled=true, audioReady=false, musicTimer=null, stepTime=0, stepIdx=0, lastPop=0;
+
+  const TEMPO=120, SIXTEENTH=(60/TEMPO)/4; // 16-dels grid
+
+  // bas: [låg, oktav] per ackord
+  const BASS={ C:[65.41,130.81], A:[55.00,110.00], F:[43.65,87.31], G:[49.00,98.00] };
+  const BASSKEYS=['C','A','F','G'];
+  // ackord-stötar (treklang) per takt
+  const CHORDS=[
+    [261.63,329.63,392.00], // C  : C4 E4 G4
+    [220.00,261.63,329.63], // Am : A3 C4 E4
+    [174.61,220.00,261.63], // F  : F3 A3 C4
+    [196.00,246.94,293.66]  // G  : G3 B3 D4
+  ];
+  // melodi-hook (gles, synkoperad) över 64 steg
+  const LEAD={C5:523.25,D5:587.33,E5:659.25,G5:783.99,A5:880.00,C6:1046.50};
+  const LEADPATTERN=new Array(64).fill(null);
+  [[6,'G5'],[7,'A5'],[8,'G5'],[10,'E5'],[14,'D5'],
+   [22,'E5'],[24,'C5'],[26,'D5'],[30,'C5'],
+   [38,'A5'],[39,'G5'],[40,'E5'],[44,'D5'],
+   [54,'D5'],[56,'E5'],[58,'G5'],[60,'C6']].forEach(([i,n])=>LEADPATTERN[i]=n);
+
+  function noise(dur){
+    const b=actx.createBuffer(1, Math.ceil(actx.sampleRate*dur), actx.sampleRate);
+    const d=b.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1;
+    const s=actx.createBufferSource(); s.buffer=b; return s;
+  }
+  function kick(t){
+    const o=actx.createOscillator(), g=actx.createGain();
+    o.frequency.setValueAtTime(150,t); o.frequency.exponentialRampToValueAtTime(48,t+0.11);
+    g.gain.setValueAtTime(0.9,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.18);
+    o.connect(g); g.connect(musicGain); o.start(t); o.stop(t+0.2);
+  }
+  function clap(t){
+    for(let k=0;k<3;k++){
+      const s=noise(0.04), bp=actx.createBiquadFilter(), g=actx.createGain();
+      bp.type='bandpass'; bp.frequency.value=1600; bp.Q.value=0.7;
+      const tt=t+k*0.012;
+      g.gain.setValueAtTime(0.4,tt); g.gain.exponentialRampToValueAtTime(0.001,tt+0.055);
+      s.connect(bp); bp.connect(g); g.connect(musicGain); s.start(tt); s.stop(tt+0.06);
+    }
+  }
+  function openHat(t){
+    const s=noise(0.2), hp=actx.createBiquadFilter(), g=actx.createGain();
+    hp.type='highpass'; hp.frequency.value=8500;
+    g.gain.setValueAtTime(0.2,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.17);
+    s.connect(hp); hp.connect(g); g.connect(musicGain); s.start(t); s.stop(t+0.2);
+  }
+  function closedHat(t,v){
+    const s=noise(0.04), hp=actx.createBiquadFilter(), g=actx.createGain();
+    hp.type='highpass'; hp.frequency.value=9000;
+    g.gain.setValueAtTime(v,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.03);
+    s.connect(hp); hp.connect(g); g.connect(musicGain); s.start(t); s.stop(t+0.04);
+  }
+  function bass(freq,t){
+    const o=actx.createOscillator(), g=actx.createGain(), lp=actx.createBiquadFilter();
+    o.type='sawtooth'; o.frequency.value=freq;
+    lp.type='lowpass'; lp.frequency.value=620; lp.Q.value=5;
+    g.gain.setValueAtTime(0.0001,t);
+    g.gain.linearRampToValueAtTime(0.5,t+0.008);
+    g.gain.exponentialRampToValueAtTime(0.0008,t+SIXTEENTH*1.7);
+    o.connect(lp); lp.connect(g); g.connect(musicGain);
+    o.start(t); o.stop(t+SIXTEENTH*2);
+  }
+  function stab(notes,t){
+    notes.forEach(f=>{
+      const o=actx.createOscillator(), g=actx.createGain(), lp=actx.createBiquadFilter();
+      o.type='sawtooth'; o.frequency.value=f;
+      lp.type='lowpass'; lp.frequency.value=2700;
+      g.gain.setValueAtTime(0.0001,t);
+      g.gain.linearRampToValueAtTime(0.13,t+0.006);
+      g.gain.exponentialRampToValueAtTime(0.0008,t+0.16);
+      o.connect(lp); lp.connect(g); g.connect(musicGain);
+      o.start(t); o.stop(t+0.18);
+    });
+  }
+  function lead(freq,t){
+    const o=actx.createOscillator(), g=actx.createGain();
+    o.type='triangle'; o.frequency.value=freq;
+    g.gain.setValueAtTime(0.0001,t);
+    g.gain.linearRampToValueAtTime(0.22,t+0.01);
+    g.gain.exponentialRampToValueAtTime(0.0008,t+SIXTEENTH*1.6);
+    o.connect(g); g.connect(musicGain);
+    o.start(t); o.stop(t+SIXTEENTH*2);
+  }
+  function scheduleStep(i,t){
+    const bar=Math.floor(i/16)%4, step=i%16;
+    const chord=CHORDS[bar], bk=BASSKEYS[bar];
+    if(step%4===0) kick(t);                       // four on the floor
+    if(step===4||step===12) clap(t);              // clap på 2 & 4
+    if(step%2===0){
+      if(step%4===2) openHat(t); else closedHat(t,0.09);
+    } else closedHat(t,0.035);                    // lätt 16-dels shimmer
+    if(step%2===0){ const oct=(step/2)%2; bass(BASS[bk][oct],t); } // oktav-bas
+    if(step===2||step===6||step===10||step===14) stab(chord,t);    // stråk-stötar
+    const lf=LEADPATTERN[i%64]; if(lf) lead(LEAD[lf],t);           // hook
+  }
+  function musicLoop(){
+    if(!soundEnabled||!actx) return;
+    while(stepTime < actx.currentTime + 0.25){
+      scheduleStep(stepIdx, stepTime);
+      stepTime += SIXTEENTH; stepIdx=(stepIdx+1)%64;
+    }
+    musicTimer=setTimeout(musicLoop, 30);
+  }
+  function ensureAudio(){
+    if(!actx){
+      const AC=window.AudioContext||window.webkitAudioContext; if(!AC) return;
+      actx=new AC();
+      master=actx.createGain();   master.gain.value = soundEnabled?1:0; master.connect(actx.destination);
+      musicGain=actx.createGain(); musicGain.gain.value=0.26; musicGain.connect(master);
+      sfxGain=actx.createGain();   sfxGain.gain.value=0.7;    sfxGain.connect(master);
+    }
+    if(actx.state==='suspended') actx.resume();
+    audioReady=true;
+    if(soundEnabled && !musicTimer){ stepTime=actx.currentTime+0.1; stepIdx=0; musicLoop(); }
+  }
+  function toggleSound(){
+    soundEnabled=!soundEnabled;
+    const sb=document.getElementById('soundBtn');
+    sb.textContent = soundEnabled?'🔊':'🔇';
+    sb.classList.toggle('pulse', soundEnabled);
+    if(soundEnabled){ ensureAudio(); if(master) master.gain.linearRampToValueAtTime(1, actx.currentTime+0.2); }
+    else if(master){ master.gain.linearRampToValueAtTime(0, actx.currentTime+0.15);
+      clearTimeout(musicTimer); musicTimer=null; }
+  }
+  function popSFX(){
+    if(!soundEnabled||!audioReady||!actx) return;
+    const now=performance.now(); if(now-lastPop<75) return; lastPop=now;
+    const t=actx.currentTime;
+    const s=noise(0.25), bp=actx.createBiquadFilter(), g=actx.createGain();
+    bp.type='bandpass'; bp.frequency.value=850; bp.Q.value=0.8;
+    g.gain.setValueAtTime(0.5,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.22);
+    s.connect(bp); bp.connect(g); g.connect(sfxGain); s.start(t); s.stop(t+0.26);
+    const o=actx.createOscillator(), og=actx.createGain();
+    o.type='triangle'; o.frequency.setValueAtTime(1500+Math.random()*700,t);
+    o.frequency.exponentialRampToValueAtTime(480,t+0.18);
+    og.gain.setValueAtTime(0.0001,t); og.gain.linearRampToValueAtTime(0.18,t+0.01);
+    og.gain.exponentialRampToValueAtTime(0.001,t+0.2);
+    o.connect(og); og.connect(sfxGain); o.start(t); o.stop(t+0.22);
+  }
+
+  /* ---- INIT ---- */
+  updateDots(); startFW(550);
+
+</script>
+</body>
+</html>
