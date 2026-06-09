@@ -696,14 +696,10 @@
     document.getElementById('rsvp-area').innerHTML=
       '<h2 style="font-size:clamp(1.6rem,7vw,2.6rem)">Yay!</h2>'+
       '<p class="lead" style="margin:.3em auto 0">Vi ses, <span class="guest-name">'+guestName+'</span>!</p>';
-    /* =====================================================================
-       👉 HÄR KOPPLAR DU IN DIN DATABAS / OSA-FORMULÄR VID DEPLOY:
-       fetch('https://din-backend.se/api/osa', {
-         method:'POST', headers:{'Content-Type':'application/json'},
-         body: JSON.stringify({ namn: guestName, kommer:true, tid:new Date().toISOString() })
-       });
-       (Lämnat tomt med flit – ren statisk fil funkar att deploya direkt.)
-       ===================================================================== */
+    fetch('https://script.google.com/macros/s/AKfycbzdlBSDqovaiJuFWImp7XdtgR0na7SlkUHuWGk_NSfVNhL3I1Dat5yTHVd6F_xZM5aWUA/exec', {
+      method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ namn: guestName, kommer:true, tid:new Date().toISOString() })
+    });
   }
 
   /* ---- TAP ANYWHERE = FIREWORK ---- */
