@@ -303,7 +303,12 @@
   .card .row b{ font-family:var(--display); display:block; font-size:1.05rem; }
   .card .row span{ font-weight:700; opacity:.8; }
   .edit-hint{ font-size:.78rem; opacity:.55; margin-top:.4rem; font-weight:700; }
-  #rsvp-area{ margin-top:.2rem; }
+  .rsvp-form{ width:min(380px,86vw); display:flex; flex-direction:column; gap:.55rem; margin-top:.6rem; }
+  .rsvp-form input{ width:100%; text-align:center; font-family:var(--body); font-weight:700;
+    font-size:clamp(.95rem,4vw,1.1rem); color:var(--ink); background:#fff; border:none;
+    border-radius:16px; padding:.55em .5em; outline:none;
+    box-shadow:0 5px 0 rgba(0,0,0,.15),inset 0 0 0 3px rgba(255,46,136,.25); }
+  .rsvp-form input::placeholder{ color:#b9b2bd; font-weight:600; }
 
   @media (max-height:660px){ .slide{ padding-top:5vh; } .castle-stage,.ice-row{ height:200px; } }
 
@@ -464,7 +469,13 @@
         <div class="row"><span class="ico">🎂</span><div><b>Vem?</b><span>Lycke fyller 7 år!</span></div></div>
         <div class="row"><span class="ico">📞</span><div><b>OSA till</b><span>0703033503</span></div></div>
       </div>
-      <div id="rsvp-area" class="reveal" style="--d:.4s"><button class="btn" onclick="rsvp()">Jag kommer!</button></div>
+      <div id="rsvp-area" class="reveal" style="--d:.4s">
+        <div class="rsvp-form">
+          <input id="rsvp-allergier" type="text" placeholder="Allergier? (valfritt)" maxlength="80" />
+          <input id="rsvp-mobil" type="tel" placeholder="Mobilnummer (valfritt)" maxlength="20" />
+          <button class="btn" style="margin-top:.2rem" onclick="rsvp()">Jag kommer!</button>
+        </div>
+      </div>
       <button class="btn reveal" style="--d:.55s;background:rgba(255,255,255,.22);color:#fff;box-shadow:none;font-size:clamp(.9rem,4vw,1.1rem);margin-top:.6rem" onclick="next()">Spela memory →</button>
     </section>
 
@@ -696,9 +707,11 @@
     document.getElementById('rsvp-area').innerHTML=
       '<h2 style="font-size:clamp(1.6rem,7vw,2.6rem)">Yay!</h2>'+
       '<p class="lead" style="margin:.3em auto 0">Vi ses, <span class="guest-name">'+guestName+'</span>!</p>';
+    const allergier=(document.getElementById('rsvp-allergier')||{}).value||'';
+    const mobil=(document.getElementById('rsvp-mobil')||{}).value||'';
     fetch('https://script.google.com/macros/s/AKfycbzdlBSDqovaiJuFWImp7XdtgR0na7SlkUHuWGk_NSfVNhL3I1Dat5yTHVd6F_xZM5aWUA/exec', {
       method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ namn: guestName, kommer:true, tid:new Date().toISOString() })
+      body: JSON.stringify({ namn: guestName, allergier, mobil, kommer:true, tid:new Date().toISOString() })
     });
   }
 
