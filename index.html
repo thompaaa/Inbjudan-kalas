@@ -429,11 +429,10 @@
     <section class="slide" id="info" style="--glow:#ff2e88">
       <h2 class="reveal" style="--d:.05s"><span class="guest-name">Kompis</span>, vi ses<br>på kalaset!</h2>
       <div class="card reveal" style="--d:.25s">
-        <div class="row"><span class="ico">📅</span><div><b>När?</b><span>LÖRDAG XX MÅNAD · kl. XX:XX</span></div></div>
-        <div class="row"><span class="ico">📍</span><div><b>Var?</b><span>Adress / plats här</span></div></div>
+        <div class="row"><span class="ico">📅</span><div><b>När?</b><span>LÖRDAG 15 AUGUSTI · kl. XX:XX</span></div></div>
+        <div class="row"><span class="ico">📍</span><div><b>Var?</b><span>Vintergatan 18, Huskvarna</span></div></div>
         <div class="row"><span class="ico">🎂</span><div><b>Vem?</b><span>Lycke fyller 7 år!</span></div></div>
-        <div class="row"><span class="ico">📞</span><div><b>OSA till</b><span>Namn · 07X-XXX XX XX</span></div></div>
-        <p class="edit-hint">↑ Byt ut texterna mot din riktiga info.</p>
+        <div class="row"><span class="ico">📞</span><div><b>OSA till</b><span>0703033503</span></div></div>
       </div>
       <div id="rsvp-area" class="reveal" style="--d:.4s"><button class="btn" onclick="rsvp()">Jag kommer!</button></div>
     </section>
@@ -748,7 +747,7 @@
       clearTimeout(musicTimer); musicTimer=null; }
   }
   function popSFX(){
-    if(!soundEnabled||!audioReady||!actx) return;
+    return;
     const now=performance.now(); if(now-lastPop<75) return; lastPop=now;
     const t=actx.currentTime;
     const s=noise(0.25), bp=actx.createBiquadFilter(), g=actx.createGain();
