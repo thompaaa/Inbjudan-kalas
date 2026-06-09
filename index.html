@@ -899,13 +899,15 @@
     if(!actx){
       const AC=window.AudioContext||window.webkitAudioContext; if(!AC) return;
       actx=new AC();
-      master=actx.createGain();   master.gain.value = soundEnabled?1:0; master.connect(actx.destination);
+      master=actx.createGain();    master.gain.value=soundEnabled?1:0; master.connect(actx.destination);
       musicGain=actx.createGain(); musicGain.gain.value=0.26; musicGain.connect(master);
       sfxGain=actx.createGain();   sfxGain.gain.value=0.7;    sfxGain.connect(master);
     }
-    if(actx.state==='suspended') actx.resume();
-    audioReady=true;
-    if(soundEnabled && !musicTimer){ stepTime=actx.currentTime+0.1; stepIdx=0; musicLoop(); }
+    const go=()=>{
+      audioReady=true;
+      if(soundEnabled&&!musicTimer){ stepTime=actx.currentTime+0.1; stepIdx=0; musicLoop(); }
+    };
+    if(actx.state==='suspended') actx.resume().then(go); else go();
   }
   function toggleSound(){
     soundEnabled=!soundEnabled;
