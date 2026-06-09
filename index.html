@@ -91,6 +91,8 @@
     border-radius:22px; padding:.6em .4em; outline:none;
     box-shadow:0 8px 0 rgba(0,0,0,.2), inset 0 0 0 4px rgba(6,214,196,.4), 0 0 26px rgba(255,255,255,.4); }
   .name-field input::placeholder{ color:#b9b2bd; font-weight:600; }
+  .name-field .btn:disabled{ opacity:.35; transform:scale(1); animation:none; cursor:not-allowed; box-shadow:0 4px 0 rgba(0,0,0,.15); }
+  @keyframes shake{ 0%,100%{ transform:translateX(0); } 20%{ transform:translateX(-8px); } 40%{ transform:translateX(8px); } 60%{ transform:translateX(-5px); } 80%{ transform:translateX(5px); } }
 
   /* ---------- AGE BADGE "7" ---------- */
   .age-wrap{ position:relative; display:inline-flex; align-items:center; justify-content:center; margin:.2em 0; }
@@ -385,8 +387,9 @@
       <h2 class="reveal" style="--d:.15s">Vad heter du?</h2>
       <div class="name-field reveal" style="--d:.3s">
         <input id="nameInput" type="text" placeholder="Skriv ditt namn…" autocomplete="off" maxlength="24"
+               oninput="document.getElementById('nameBtn').disabled=!this.value.trim()"
                onkeydown="if(event.key==='Enter')submitName()" />
-        <button class="btn" onclick="submitName()">Nästa →</button>
+        <button id="nameBtn" class="btn" onclick="submitName()" disabled>Nästa →</button>
       </div>
     </section>
 
@@ -676,7 +679,13 @@
 
   function submitName(){
     const v=document.getElementById('nameInput').value.trim();
-    guestName=v||'kompis';
+    if(!v){
+      const inp=document.getElementById('nameInput');
+      inp.style.animation='shake .4s ease';
+      setTimeout(()=>inp.style.animation='',420);
+      return;
+    }
+    guestName=v;
     document.querySelectorAll('.guest-name').forEach(el=>el.textContent=guestName);
     next();
   }
