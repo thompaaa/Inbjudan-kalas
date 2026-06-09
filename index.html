@@ -40,6 +40,7 @@
   #godis    { background-image:linear-gradient(135deg,#ffd60a,#ff7a2e,#ff2e88,#ffa53d); }
   #dans     { background:#0c0420; }
   #info     { background-image:linear-gradient(135deg,#ffd60a,#ff7a2e,#ff2e88,#b14dff); }
+  #memory   { background-image:linear-gradient(135deg,#1a0640,#2d0f5e,#06d6c4,#33d2ff); }
 
   /* ---------- TYPOGRAPHY ---------- */
   .kicker{ font-weight:900; text-transform:uppercase; letter-spacing:.2em;
@@ -305,6 +306,35 @@
   #rsvp-area{ margin-top:.2rem; }
 
   @media (max-height:660px){ .slide{ padding-top:5vh; } .castle-stage,.ice-row{ height:200px; } }
+
+  /* ====================================================== MEMORY */
+  .countdown{ display:flex; gap:8px; justify-content:center; margin:.3rem 0 .6rem; }
+  .cunit{ background:rgba(255,255,255,.18); border-radius:14px; padding:.45em .6em; min-width:58px;
+    backdrop-filter:blur(6px); box-shadow:0 4px 14px rgba(0,0,0,.25); }
+  .cunit span{ font-family:var(--display); font-weight:800; font-size:clamp(1.35rem,6vw,2rem);
+    color:#fff; display:block; text-shadow:0 0 10px #fff; }
+  .cunit label{ font-size:.58rem; font-weight:800; text-transform:uppercase; letter-spacing:.1em;
+    opacity:.75; display:block; }
+  .mem-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:7px;
+    width:min(330px,88vw); margin:.2rem auto 0; }
+  .mem-card{ aspect-ratio:1; border-radius:11px; cursor:pointer; perspective:600px; }
+  .mem-card-inner{ position:relative; width:100%; height:100%; transform-style:preserve-3d;
+    transition:transform .38s cubic-bezier(.34,1.2,.64,1); }
+  .mem-card.flipped .mem-card-inner,
+  .mem-card.matched .mem-card-inner{ transform:rotateY(180deg); }
+  .mem-back,.mem-face{ position:absolute; inset:0; border-radius:11px; backface-visibility:hidden;
+    -webkit-backface-visibility:hidden; display:flex; align-items:center; justify-content:center; }
+  .mem-back{ background:linear-gradient(135deg,var(--purple),var(--pink));
+    box-shadow:0 3px 10px rgba(0,0,0,.3),inset 0 0 0 3px rgba(255,255,255,.2); }
+  .mem-back::after{ content:"★"; color:rgba(255,255,255,.5); font-size:1.3rem; }
+  .mem-face{ background:#fff; transform:rotateY(180deg); font-size:clamp(1.5rem,7vw,2rem); }
+  .mem-card.matched .mem-face{ background:linear-gradient(135deg,#d6ffe0,#9bffe0);
+    box-shadow:0 0 0 3px var(--green),0 3px 10px rgba(0,0,0,.2);
+    animation:matchPop .35s cubic-bezier(.34,1.56,.64,1) both; }
+  @keyframes matchPop{ 0%{ transform:rotateY(180deg) scale(.8); } 100%{ transform:rotateY(180deg) scale(1); } }
+  #mem-msg{ font-family:var(--display); font-weight:800; font-size:clamp(1.1rem,5vw,1.4rem);
+    color:#fff; text-shadow:0 0 12px rgba(255,255,255,.6); min-height:1.6em; margin-top:.2rem; }
+  .mem-restart{ margin-top:.4rem; font-size:.9rem; padding:.45em 1.2em; }
 </style>
 </head>
 <body>
@@ -435,6 +465,20 @@
         <div class="row"><span class="ico">📞</span><div><b>OSA till</b><span>0703033503</span></div></div>
       </div>
       <div id="rsvp-area" class="reveal" style="--d:.4s"><button class="btn" onclick="rsvp()">Jag kommer!</button></div>
+      <button class="btn reveal" style="--d:.55s;background:rgba(255,255,255,.22);color:#fff;box-shadow:none;font-size:clamp(.9rem,4vw,1.1rem);margin-top:.6rem" onclick="next()">Spela memory →</button>
+    </section>
+
+    <!-- 11. MEMORY -->
+    <section class="slide" id="memory" style="--glow:#33d2ff">
+      <div class="kicker reveal" style="--d:.05s">Kalaset börjar om</div>
+      <div class="countdown reveal" style="--d:.15s">
+        <div class="cunit"><span id="cd-days">--</span><label>dagar</label></div>
+        <div class="cunit"><span id="cd-hrs">--</span><label>timmar</label></div>
+        <div class="cunit"><span id="cd-min">--</span><label>min</label></div>
+        <div class="cunit"><span id="cd-sec">--</span><label>sek</label></div>
+      </div>
+      <div class="mem-grid reveal" style="--d:.3s" id="memGrid"></div>
+      <p id="mem-msg" class="reveal" style="--d:.4s"></p>
     </section>
 
   </div>
@@ -580,9 +624,68 @@
   function onEnter(id){
     stopCandy();
     if(id==='welcome'||id==='dans'||id==='info'){ startFW(550); }
+    else if(id==='memory'){ stopFW(); }
     else { startFW(1000); }
     if(id==='godis') candyRain();
     if(id==='name') setTimeout(()=>document.getElementById('nameInput').focus(),400);
+    if(id==='memory') initMemory();
+  }
+
+  /* ---- COUNTDOWN ---- */
+  const PARTY_DATE=new Date('2026-08-15T12:00:00Z'); // 14:00 CEST
+  function updateCountdown(){
+    const diff=PARTY_DATE-Date.now();
+    if(diff<=0){
+      document.querySelector('.countdown').innerHTML='<b style="font-size:1.4rem;color:#fff">Det är idag! 🎉</b>';
+      return;
+    }
+    const d=Math.floor(diff/86400000);
+    const h=Math.floor((diff%86400000)/3600000);
+    const m=Math.floor((diff%3600000)/60000);
+    const s=Math.floor((diff%60000)/1000);
+    document.getElementById('cd-days').textContent=d;
+    document.getElementById('cd-hrs').textContent=String(h).padStart(2,'0');
+    document.getElementById('cd-min').textContent=String(m).padStart(2,'0');
+    document.getElementById('cd-sec').textContent=String(s).padStart(2,'0');
+  }
+  setInterval(updateCountdown,1000); updateCountdown();
+
+  /* ---- MEMORY GAME ---- */
+  const MEM_SYMS=['🎂','🍦','🍭','🎈','⭐','🎉'];
+  let memFirst=null, memLock=false, memMatched=0;
+
+  function initMemory(){
+    const grid=document.getElementById('memGrid');
+    grid.innerHTML=''; document.getElementById('mem-msg').textContent='';
+    memFirst=null; memLock=false; memMatched=0;
+    const deck=[...MEM_SYMS,...MEM_SYMS].sort(()=>Math.random()-.5);
+    deck.forEach(sym=>{
+      const card=document.createElement('div');
+      card.className='mem-card';
+      card.innerHTML='<div class="mem-card-inner"><div class="mem-back"></div><div class="mem-face">'+sym+'</div></div>';
+      card.dataset.sym=sym;
+      card.addEventListener('click',()=>flipCard(card));
+      grid.appendChild(card);
+    });
+  }
+
+  function flipCard(card){
+    if(memLock||card.classList.contains('flipped')||card.classList.contains('matched')) return;
+    card.classList.add('flipped');
+    if(!memFirst){ memFirst=card; return; }
+    memLock=true;
+    if(memFirst.dataset.sym===card.dataset.sym){
+      memFirst.classList.add('matched'); card.classList.add('matched');
+      memFirst=null; memLock=false; memMatched++;
+      if(memMatched===MEM_SYMS.length){
+        document.getElementById('mem-msg').textContent='Bra jobbat! 🎉';
+        confetti(120);
+        for(let k=0;k<4;k++) setTimeout(()=>rocket(innerWidth*Math.random(),innerHeight*(.1+.3*Math.random())),k*200);
+      }
+    } else {
+      const a=memFirst, b=card;
+      setTimeout(()=>{ a.classList.remove('flipped'); b.classList.remove('flipped'); memFirst=null; memLock=false; },900);
+    }
   }
 
   /* ---- RSVP ---- */
