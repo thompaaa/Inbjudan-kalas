@@ -39,6 +39,7 @@
   #glass    { background-image:linear-gradient(135deg,#9bfff0,#06d6c4,#33d2ff,#1bb6a8); }
   #godis    { background-image:linear-gradient(135deg,#ffd60a,#ff7a2e,#ff2e88,#ffa53d); }
   #dans     { background:#0c0420; }
+  #klass    { background-image:linear-gradient(135deg,#ff2e88,#ff7a2e,#ffd60a,#b14dff); }
   #info     { background-image:linear-gradient(135deg,#ffd60a,#ff7a2e,#ff2e88,#b14dff); }
   #memory   { background-image:linear-gradient(135deg,#1a0640,#2d0f5e,#06d6c4,#33d2ff); }
 
@@ -312,6 +313,22 @@
 
   @media (max-height:660px){ .slide{ padding-top:5vh; } .castle-stage,.ice-row{ height:200px; } }
 
+  /* ====================================================== FB-KLASSEN */
+  .klass-grid{ display:grid; grid-template-columns:repeat(6,1fr); gap:6px 10px;
+    width:min(330px,86vw); margin:.5rem auto 0; }
+  .kiddie{ display:flex; flex-direction:column; align-items:center;
+    animation:kidDance .8s ease-in-out infinite; }
+  .kiddie .kh{ width:16px; height:16px; border-radius:50%;
+    background:radial-gradient(circle at 33% 28%,#fff,#ffd9b3 70%);
+    box-shadow:0 0 0 1px rgba(0,0,0,.07); }
+  .kiddie .kb{ width:20px; height:22px; margin-top:1px;
+    border-radius:10px 10px 7px 7px; background:var(--kc,#ff2e88); position:relative; }
+  .kiddie .kb::before,.kiddie .kb::after{ content:""; position:absolute; top:2px;
+    width:6px; height:14px; border-radius:3px; background:var(--kc,#ff2e88); transform-origin:top; }
+  .kiddie .kb::before{ left:-5px; transform:rotate(-32deg); }
+  .kiddie .kb::after{ right:-5px; transform:rotate(32deg); }
+  @keyframes kidDance{ 0%,100%{ transform:translateY(0) rotate(-8deg); } 50%{ transform:translateY(-11px) rotate(8deg); } }
+
   /* ====================================================== MEMORY */
   .countdown{ display:flex; gap:8px; justify-content:center; margin:.3rem 0 .6rem; }
   .cunit{ background:rgba(255,255,255,.18); border-radius:14px; padding:.45em .6em; min-width:58px;
@@ -459,7 +476,40 @@
       <button class="btn reveal" style="--d:.5s" onclick="next()">Är du med? →</button>
     </section>
 
-    <!-- 10. INFO / OSA -->
+    <!-- 10. FB-KLASSEN -->
+    <section class="slide" id="klass" style="--glow:#ffd60a">
+      <h1 class="reveal" style="--d:.05s">FB-<br>GÄNGET!</h1>
+      <div class="klass-grid reveal" style="--d:.2s">
+        <div class="kiddie" style="--kc:#ff2e88;animation-delay:0s"><span class="kh"></span><span class="kb"></span></div>
+        <div class="kiddie" style="--kc:#ff7a2e;animation-delay:.07s"><span class="kh"></span><span class="kb"></span></div>
+        <div class="kiddie" style="--kc:#ffd60a;animation-delay:.14s"><span class="kh"></span><span class="kb"></span></div>
+        <div class="kiddie" style="--kc:#06d6c4;animation-delay:.21s"><span class="kh"></span><span class="kb"></span></div>
+        <div class="kiddie" style="--kc:#b14dff;animation-delay:.28s"><span class="kh"></span><span class="kb"></span></div>
+        <div class="kiddie" style="--kc:#19e58c;animation-delay:.35s"><span class="kh"></span><span class="kb"></span></div>
+        <div class="kiddie" style="--kc:#33d2ff;animation-delay:.42s"><span class="kh"></span><span class="kb"></span></div>
+        <div class="kiddie" style="--kc:#ff5da0;animation-delay:.49s"><span class="kh"></span><span class="kb"></span></div>
+        <div class="kiddie" style="--kc:#ff7a2e;animation-delay:.56s"><span class="kh"></span><span class="kb"></span></div>
+        <div class="kiddie" style="--kc:#ffd60a;animation-delay:.63s"><span class="kh"></span><span class="kb"></span></div>
+        <div class="kiddie" style="--kc:#ff2e88;animation-delay:.7s"><span class="kh"></span><span class="kb"></span></div>
+        <div class="kiddie" style="--kc:#06d6c4;animation-delay:.07s"><span class="kh"></span><span class="kb"></span></div>
+        <div class="kiddie" style="--kc:#b14dff;animation-delay:.14s"><span class="kh"></span><span class="kb"></span></div>
+        <div class="kiddie" style="--kc:#19e58c;animation-delay:.21s"><span class="kh"></span><span class="kb"></span></div>
+        <div class="kiddie" style="--kc:#33d2ff;animation-delay:.28s"><span class="kh"></span><span class="kb"></span></div>
+        <div class="kiddie" style="--kc:#ff5da0;animation-delay:.35s"><span class="kh"></span><span class="kb"></span></div>
+        <div class="kiddie" style="--kc:#ff2e88;animation-delay:.42s"><span class="kh"></span><span class="kb"></span></div>
+        <div class="kiddie" style="--kc:#ff7a2e;animation-delay:.49s"><span class="kh"></span><span class="kb"></span></div>
+        <div class="kiddie" style="--kc:#ffd60a;animation-delay:.56s"><span class="kh"></span><span class="kb"></span></div>
+        <div class="kiddie" style="--kc:#b14dff;animation-delay:.63s"><span class="kh"></span><span class="kb"></span></div>
+        <div class="kiddie" style="--kc:#06d6c4;animation-delay:.7s"><span class="kh"></span><span class="kb"></span></div>
+        <div class="kiddie" style="--kc:#19e58c;animation-delay:.07s"><span class="kh"></span><span class="kb"></span></div>
+        <div class="kiddie" style="--kc:#33d2ff;animation-delay:.14s"><span class="kh"></span><span class="kb"></span></div>
+        <div class="kiddie" style="--kc:#ff5da0;animation-delay:.21s"><span class="kh"></span><span class="kb"></span></div>
+      </div>
+      <p class="lead reveal" style="--d:.4s">Alla 24 är välkomna!</p>
+      <button class="btn reveal" style="--d:.55s" onclick="next()">Nästa →</button>
+    </section>
+
+    <!-- 11. INFO / OSA -->
     <section class="slide" id="info" style="--glow:#ff2e88">
       <h2 class="reveal" style="--d:.05s"><span class="guest-name">Kompis</span>, vi ses<br>på kalaset!</h2>
       <div class="card reveal" style="--d:.25s">
@@ -475,7 +525,7 @@
           <button class="btn" style="margin-top:.2rem" onclick="rsvp()">Jag kommer!</button>
         </div>
       </div>
-      <button class="btn reveal" style="--d:.55s;background:rgba(255,255,255,.22);color:#fff;box-shadow:none;font-size:clamp(.9rem,4vw,1.1rem);margin-top:.6rem" onclick="next()">Spela memory →</button>
+      <button id="memory-btn" class="btn" style="display:none;background:rgba(255,255,255,.22);color:#fff;box-shadow:none;font-size:clamp(.9rem,4vw,1.1rem);margin-top:.6rem" onclick="next()">Spela memory →</button>
     </section>
 
     <!-- 11. MEMORY -->
@@ -706,6 +756,7 @@
     document.getElementById('rsvp-area').innerHTML=
       '<h2 style="font-size:clamp(1.6rem,7vw,2.6rem)">Yay!</h2>'+
       '<p class="lead" style="margin:.3em auto 0">Vi ses, <span class="guest-name">'+guestName+'</span>!</p>';
+    document.getElementById('memory-btn').style.display='';
     const allergier=(document.getElementById('rsvp-allergier')||{}).value||'';
     const mobil=(document.getElementById('rsvp-mobil')||{}).value||'';
     fetch('https://script.google.com/macros/s/AKfycbzdlBSDqovaiJuFWImp7XdtgR0na7SlkUHuWGk_NSfVNhL3I1Dat5yTHVd6F_xZM5aWUA/exec', {
