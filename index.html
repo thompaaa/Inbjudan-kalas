@@ -759,6 +759,8 @@
 
   /* ---- RSVP ---- */
   function rsvp(){
+    const allergier=document.getElementById('rsvp-allergier').value.trim();
+    const mobil=document.getElementById('rsvp-mobil').value.trim();
     confetti(200); startFW(250);
     for(let k=0;k<6;k++) setTimeout(()=>rocket(innerWidth*Math.random(),innerHeight*(.15+.3*Math.random())),k*150);
     setTimeout(()=>startFW(550),2600);
@@ -766,8 +768,6 @@
       '<h2 style="font-size:clamp(1.6rem,7vw,2.6rem)">Yay!</h2>'+
       '<p class="lead" style="margin:.3em auto 0">Vi ses, <span class="guest-name">'+guestName+'</span>!</p>';
     document.getElementById('memory-btn').style.display='';
-    const allergier=(document.getElementById('rsvp-allergier')||{}).value||'';
-    const mobil=(document.getElementById('rsvp-mobil')||{}).value||'';
     fetch('https://script.google.com/macros/s/AKfycbzdlBSDqovaiJuFWImp7XdtgR0na7SlkUHuWGk_NSfVNhL3I1Dat5yTHVd6F_xZM5aWUA/exec', {
       method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ namn: guestName, allergier, mobil, kommer:true, tid:new Date().toISOString() })
