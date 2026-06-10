@@ -667,6 +667,7 @@
 
   /* ---- NAV ---- */
   function goTo(i){
+    ensureAudio();
     if(i<0||i>=slides.length) return;
     slides[idx].classList.remove('active'); idx=i; slides[idx].classList.add('active');
     updateDots();
